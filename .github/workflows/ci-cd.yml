@@ -19,8 +19,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Run Tests
         run: |
-          # Add your commands to run tests here
-          # Example: python -m unittest discover tests
+          # Ajoutez vos commandes pour exécuter les tests ici
+          # Exemple : python -m unittest discover tests
 
   build-and-push:
     needs: test
@@ -35,7 +35,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}  # Utilisez le secret d'access token
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
       - name: Install Python dependencies
         run: |
@@ -45,12 +45,12 @@ jobs:
 
       - name: Build and Test
         run: |
-          docker build -t myapp:${{ github.sha }} .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.sha }} .
           # Ajoutez des commandes pour exécuter vos tests ici
 
       - name: Push to DockerHub
         if: github.event_name != 'pull_request' && success()
-        run: docker push myapp:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.sha }}
 
   deploy:
     needs: build-and-push
@@ -67,10 +67,10 @@ jobs:
 
       - name: Pull and Tag the Docker image
         run: |
-          docker pull myapp:${{ github.sha }}
-          docker tag myapp:${{ github.sha }} myapp:latest
-          docker tag myapp:${{ github.sha }} myapp:${{ github.event.release.tag_name }}
+          docker pull ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.sha }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/joke-generator:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.event.release.tag_name }}
       - name: Push tagged images to DockerHub
         run: |
-          docker push myapp:latest
-          docker push myapp:${{ github.event.release.tag_name }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/joke-generator:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.event.release.tag_name }}
