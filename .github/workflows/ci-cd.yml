@@ -12,51 +12,53 @@ on:
     types: [created]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Run Tests
+        run: |
+          # Add your commands to run tests here
+          # Example: python -m unittest discover tests
 
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and Test
-        run: |
-          docker build -t myapp:${{ github.sha }} .
-          # Add commands to run your tests here
-
+      - name: Build Docker image
+        run: docker build -t myapp:${{ github.sha }} .
       - name: Push to DockerHub
         if: github.event_name != 'pull_request' && success()
         run: docker push myapp:${{ github.sha }}
 
   deploy:
-    needs: build-and-test
+    needs: build-and-push
     if: github.event_name == 'release' && github.event.action == 'created'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Pull and Tag the Docker image
         run: |
           docker pull myapp:${{ github.sha }}
           docker tag myapp:${{ github.sha }} myapp:latest
           docker tag myapp:${{ github.sha }} myapp:${{ github.event.release.tag_name }}
-
       - name: Push tagged images to DockerHub
         run: |
           docker push myapp:latest
