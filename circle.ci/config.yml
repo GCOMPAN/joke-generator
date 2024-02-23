@@ -1,0 +1,26 @@
+version: 2.1
+
+jobs:
+  build:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout
+      - run:
+          name: Build Docker image
+          command: |
+            if [ "$CIRCLE_BRANCH" == "master" ]; then
+              TAG="latest"
+            else
+              TAG="$CIRCLE_BRANCH"
+            fi
+            docker build -t gabrielcompan/joke-generator:$TAG .
+      - run:
+          name: Test Docker container
+          command: |
+            # ...
+      - run:
+          name: Push Docker image to DockerHub
+          command: |
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            docker push gabrielcompan/joke-generator:$TAG
