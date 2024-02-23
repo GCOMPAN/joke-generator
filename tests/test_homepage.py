@@ -1,6 +1,6 @@
 import pytest
-from semaphoreflask import app
-
+from flask import app
+ 
 @pytest.fixture
 def client():
     with app.test_client() as client    :
