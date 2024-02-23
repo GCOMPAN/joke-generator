@@ -1,0 +1,62 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  release:
+    types: [created]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Test
+        run: |
+          docker build -t myapp:${{ github.sha }} .
+          # Add commands to run your tests here
+
+      - name: Push to DockerHub
+        if: github.event_name != 'pull_request' && success()
+        run: docker push myapp:${{ github.sha }}
+
+  deploy:
+    needs: build-and-test
+    if: github.event_name == 'release' && github.event.action == 'created'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Pull and Tag the Docker image
+        run: |
+          docker pull myapp:${{ github.sha }}
+          docker tag myapp:${{ github.sha }} myapp:latest
+          docker tag myapp:${{ github.sha }} myapp:${{ github.event.release.tag_name }}
+
+      - name: Push tagged images to DockerHub
+        run: |
+          docker push myapp:latest
+          docker push myapp:${{ github.event.release.tag_name }}
