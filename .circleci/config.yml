@@ -28,3 +28,17 @@ jobs:
           command: |
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             docker push gabrielcompan/joke-generator:$TAG
+            
+workflows:
+  version: 2
+  build_and_push_on_push:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+                - /feature-.*/
+                - /bugfix-.*/
+                - /release-.*/
+                - Dockerfile
