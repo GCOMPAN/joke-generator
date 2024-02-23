@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Joke App</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Choisissez une catégorie de blague</h1>
@@ -12,16 +13,25 @@
             <option value="{{ category }}">{{ category }}</option>
             {% endfor %}
         </select>
+        <select name="lang">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+            <option value="pt">Português</option>
+            <option value="cs">Česky</option>
+        </select>
+        <select name="type">
+            <option value="single">Single</option>
+            <option value="twopart">Two-part</option>
+        </select>
+        <input type="text" name="blacklistFlags" placeholder="Blacklist Flags (e.g., nsfw,religious)">
         <button type="submit">Obtenir une blague</button>
     </form>
 
     {% if joke %}
     <div>
         <p>{{ joke }}</p>
-        <form method="post">
-            <input type="hidden" name="joke" value="{{ joke }}">
-            <button type="submit" name="like">Like</button>
-        </form>
     </div>
     {% endif %}
 </body>
