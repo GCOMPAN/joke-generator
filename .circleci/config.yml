@@ -18,7 +18,7 @@ jobs:
       - run:
           name: Test Docker container
           command: |
-            docker run -d -p 5000:5000 --name docker-joke-container gabrielcompan/joke-generator:$CIRCLE_SHA1
+            docker run -d -p 5000:5000 --name docker-joke-container gabrielcompan/joke-generator:$TAG
             sleep 5
             wget http://127.0.0.1:5000/
             docker stop docker-joke-container
