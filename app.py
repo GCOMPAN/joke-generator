@@ -15,7 +15,7 @@ def get_categories():
 # Route principale pour afficher le formulaire et les blagues
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    joke = "Click the button to get a joke.."
+    joke = "Click the button to get a joke..."
     if request.method == 'POST':
         category = request.form.get('category', 'Any')
         lang = request.form.get('lang', 'en')
