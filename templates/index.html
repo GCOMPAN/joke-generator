@@ -46,5 +46,14 @@
         </div>
         {% endif %}
     </div>
+    
+    <div class="container mt-8" id="write-joke-container">
+        <h1 class="text-3xl text-white mb-4">Write Your Own Joke :</h1>
+        <form method="post" action="/submit_own_joke">
+            <textarea name="user_joke" id="user_joke" rows="4" placeholder="Write your own joke..." class="p-2 border rounded-md w-full"></textarea>
+            <button type="submit" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4">Submit your Joke</button>
+        </form>
+    </div>
+
 </body>
 </html>
