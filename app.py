@@ -27,6 +27,11 @@ def index():
         joke_data = response.json()
 
         if not joke_data.get('error'):
+            if 'like' in request.form:
+                # Sauvegarder la blague likée
+                with open('liked_jokes.txt', 'a') as file:
+                    file.write("-------------------\n")
+                    file.write(f"{request.form['joke']}\n")
             if joke_data.get('type') == 'single':
                 joke = joke_data.get('joke', "Joke not found.")
             elif joke_data.get('type') == 'twopart':
