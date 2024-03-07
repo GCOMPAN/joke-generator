@@ -1,9 +1,5 @@
 from flask import Flask, request, render_template
 import requests
-import yaml
-
-with open(".circleci/config.yml", "r") as config_file:
-    config_data = yaml.safe_load(config_file)
 
 app = Flask(__name__)
 
