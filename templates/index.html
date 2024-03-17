@@ -1,28 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joke App</title>
+    <!-- Intégration de Tailwind CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Choisissez une catégorie de blague</h1>
-    <form method="post">
-        <select name="category">
-            {% for category in categories %}
-            <option value="{{ category }}">{{ category }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Obtenir une blague</button>
-    </form>
 
-    {% if joke %}
-    <div>
-        <p>{{ joke }}</p>
+<body style="background-image: url('https://i.ibb.co/nQ0hBPf/Joke-generator-Wallpaper.png')">
+    <div class="container mt-8" id="container">
+        <h1 class="text-3xl text-white mb-4">Choose your kind of Joke with the criterias :</h1>
         <form method="post">
-            <input type="hidden" name="joke" value="{{ joke }}">
-            <button type="submit" name="like">Like</button>
+            <div>
+                <select name="category" id="category" class="p-2 border rounded-md">
+                    {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+                <select name="lang" id="lang" class="p-2 border rounded-md">
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="es">Español</option>
+                    <option value="pt">Português</option>
+                    <option value="cs">Česky</option>
+                </select>
+                <select name="type" id="type" class="p-2 border rounded-md">
+                    <option value="twopart">Two-part</option>
+                    <option value="single">Single</option>
+                </select>
+            </div>
+            <div class="mb-4 w-full">
+                <label for="blacklistFlags" class="text-white">Blacklist Flags :</label>
+                <input type="text" name="blacklistFlags" id="blacklistFlags" placeholder="E.g., nsfw,religious" class="p-2 border rounded-md w-full">
+            </div>
+
+            <button type="submit" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Generate a Joke</button>
         </form>
+        {% if joke %}
+        <div id="joke-section" class="container mx-auto bg-purple-700 p-8 rounded-lg mt-8 font-bold text-white">
+            <p>{{ joke }}</p>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
 </body>
 </html>

@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - githubactions
+      - tests
   pull_request:
     branches:
       - main
@@ -18,10 +19,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Run Tests
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8' # or any version you require
+
+      - name: Install dependencies
         run: |
-          # Ajoutez vos commandes pour exécuter les tests ici
-          # Exemple : python -m unittest discover tests
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
+
+      - name: Run tests with pytest
+        run: pytest
 
   build-and-push:
     needs: test
@@ -44,10 +57,9 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: Build and Test
+      - name: Build Docker image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.sha }} .
-          # Ajoutez des commandes pour exécuter vos tests ici
 
       - name: Push to DockerHub
         if: github.event_name != 'pull_request' && success()
@@ -71,6 +83,7 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.sha }}
           docker tag ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/joke-generator:latest
           docker tag ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/joke-generator:${{ github.event.release.tag_name }}
+
       - name: Push tagged images to DockerHub
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/joke-generator:latest

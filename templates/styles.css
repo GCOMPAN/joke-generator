@@ -1,0 +1,60 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+#container {
+    text-align: center;
+}
+
+h1 {
+    color: #ffffff;
+}
+
+form {
+    background-color: #a62cd2; /* Nouvelle couleur de fond */
+    padding: 20px;
+    border-radius: 15px; /* Effet arrondi sur le formulaire */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap; /* Pour gérer le wrapping des éléments */
+    justify-content: space-between; /* Aligne les éléments sur une ligne */
+}
+
+form div {
+    flex: 0 0 48%;
+    margin-bottom: 10px;
+}
+
+form label {
+    display: block;
+    color: white;
+    margin-bottom: 5px;
+}
+
+form select,
+form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+form button {
+    width: 100%;
+    padding: 14px 20px;
+    margin: 8px 0;
+}
+
+#joke-section{
+    background-color: #5b0a79;
+    color: #ffffff;
+}
